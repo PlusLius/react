@@ -2872,6 +2872,7 @@ if (__DEV__) {
     ): void {
       currentHookNameInDev = 'useEffect';
       updateHookTypesDev();
+      // 
       return updateEffect(create, deps);
     },
     useImperativeHandle<T>(
@@ -3161,6 +3162,7 @@ if (__DEV__) {
       currentHookNameInDev = 'useEffect';
       warnInvalidHookAccess();
       mountHookTypesDev();
+      // 创建Hook
       return mountEffect(create, deps);
     },
     useImperativeHandle<T>(
