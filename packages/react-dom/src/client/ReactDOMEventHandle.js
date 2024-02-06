@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 给dom节点注册事件
 import type {DOMEventName} from '../events/DOMEventNames';
 import type {ReactScopeInstance} from 'shared/ReactTypes';
 import type {
