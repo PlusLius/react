@@ -7,6 +7,7 @@
  * @flow
  */
 
+// 用于把虚拟dom节点同步到真实dom节点
 import type {Fiber} from 'react-reconciler/src/ReactInternalTypes';
 import type {ReactScopeInstance} from 'shared/ReactTypes';
 import type {
