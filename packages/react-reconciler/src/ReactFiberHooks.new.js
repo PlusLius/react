@@ -1353,7 +1353,7 @@ function mountSyncExternalStore<T>(
 
   return nextSnapshot;
 }
-
+// 函数组件更新
 function updateSyncExternalStore<T>(
   subscribe: (() => void) => () => void,
   getSnapshot: () => T,
@@ -2184,7 +2184,7 @@ function refreshCache<T>(fiber: Fiber, seedKey: ?() => T, seedValue: T) {
   }
   // TODO: Warn if unmounted?
 }
-
+// 函数组件更新
 function dispatchReducerAction<S, A>(
   fiber: Fiber,
   queue: UpdateQueue<S, A>,
