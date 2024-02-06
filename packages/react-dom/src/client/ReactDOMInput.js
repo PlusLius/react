@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 处理input标签节点
 // TODO: direct imports like some-package/src/* are bad. Fix me.
 import {getCurrentFiberOwnerNameInDevOrNull} from 'react-reconciler/src/ReactCurrentFiber';
 
