@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 定义fiber的flag值
 import {enableCreateEventHandleAPI} from 'shared/ReactFeatureFlags';
 
 export type Flags = number;
