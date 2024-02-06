@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 原生标签节点
 import type {DOMEventName} from '../events/DOMEventNames';
 import type {Fiber, FiberRoot} from 'react-reconciler/src/ReactInternalTypes';
 import type {
