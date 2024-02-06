@@ -165,7 +165,7 @@ ReactDOMHydrationRoot.prototype.unmount = ReactDOMRoot.prototype.unmount = funct
     unmarkContainerAsRoot(container);
   }
 };
-
+// 定义createRoot
 export function createRoot(
   container: Element | DocumentFragment,
   options?: CreateRootOptions,
