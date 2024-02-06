@@ -92,6 +92,9 @@ function ReactDOMRoot(internalRoot: FiberRoot) {
 ReactDOMHydrationRoot.prototype.render = ReactDOMRoot.prototype.render = function(
   children: ReactNodeList,
 ): void {
+  // 主入口，拿到fibderNode，fiber树，current.child.stateNode拿到根dom节点
+  // 其他属性，key唯一性标识，index组件的位置，tag什么类型组件 type什么类型的标签 child 子fiber sibling 兄弟feiber return 父fiber
+  // 
   const root = this._internalRoot;
   if (root === null) {
     throw new Error('Cannot update an unmounted root.');
