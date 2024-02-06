@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 事件的添加与移除
 export function addEventBubbleListener(
   target: EventTarget,
   eventType: string,
