@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 原生事件类型
 import getVendorPrefixedEventName from './getVendorPrefixedEventName';
 
 export type DOMEventName =
