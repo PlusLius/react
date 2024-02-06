@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// innerHTML实现方法
 import {SVG_NAMESPACE} from '../shared/DOMNamespaces';
 import createMicrosoftUnsafeLocalFunction from './createMicrosoftUnsafeLocalFunction';
 import {enableTrustedTypesIntegration} from 'shared/ReactFeatureFlags';
