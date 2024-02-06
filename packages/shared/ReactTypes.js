@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// react 类型申明文件
 export type ReactNode =
   | React$Element<any>
   | ReactPortal
