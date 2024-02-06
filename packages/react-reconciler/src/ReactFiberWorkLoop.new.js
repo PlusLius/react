@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 处理fiber节点的更新
 import type {Wakeable} from 'shared/ReactTypes';
 import type {Fiber, FiberRoot} from './ReactInternalTypes';
 import type {Lanes, Lane} from './ReactFiberLane.new';
