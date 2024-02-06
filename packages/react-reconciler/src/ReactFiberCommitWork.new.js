@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// commit阶段执行的方法
 import type {
   Instance,
   TextInstance,
