@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 派发合成事件
 import type {AnyNativeEvent} from '../events/PluginModuleType';
 import type {FiberRoot} from 'react-reconciler/src/ReactInternalTypes';
 import type {Container, SuspenseInstance} from '../client/ReactDOMHostConfig';
