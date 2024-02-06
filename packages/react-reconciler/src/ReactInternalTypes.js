@@ -79,16 +79,21 @@ export type Fiber = {|
   tag: WorkTag,
 
   // Unique identifier of this child.
+  // 标记节点当前层级下唯一
   key: null | string,
 
   // The value of element.type which is used to preserve the identity during
   // reconciliation of this child.
+  // 标记当前节点的类型
   elementType: any,
 
   // The resolved function/class/ associated with this fiber.
+  // 标记当前节点的类型
   type: any,
 
   // The local state associated with this fiber.
+  // host dom
+  // class instance
   stateNode: any,
 
   // Conceptual aliases
@@ -104,8 +109,10 @@ export type Fiber = {|
   return: Fiber | null,
 
   // Singly Linked List Tree Structure.
-  child: Fiber | null,
-  sibling: Fiber | null,
+  // 单链表树结构
+  child: Fiber | null, // 第一个子节点
+  sibling: Fiber | null, // 下一个兄弟Fiber
+  // 标记了节点在当前层级下的位置
   index: number,
 
   // The ref last used to attach this node.
@@ -120,12 +127,15 @@ export type Fiber = {|
   memoizedProps: any, // The props used to create the output.
 
   // A queue of state updates and callbacks.
+  // 批量更新
   updateQueue: mixed,
 
   // The state used to create the output
+  // 类组件的状态，函数组件的一个hook
   memoizedState: any,
 
   // Dependencies (contexts, events) for this fiber, if it has any
+  // 组件依赖
   dependencies: Dependencies | null,
 
   // Bitfield that describes properties about the fiber and its subtree. E.g.
@@ -137,9 +147,10 @@ export type Fiber = {|
   mode: TypeOfMode,
 
   // Effect
-  flags: Flags,
+  // 组件副作用
+  flags: Flags, // 标记更新，删除等
   subtreeFlags: Flags,
-  deletions: Array<Fiber> | null,
+  deletions: Array<Fiber> | null, // 要删除子节点们
 
   // Singly linked list fast path to the next fiber with side-effects.
   nextEffect: Fiber | null,
@@ -150,13 +161,13 @@ export type Fiber = {|
   firstEffect: Fiber | null,
   lastEffect: Fiber | null,
 
-  lanes: Lanes,
-  childLanes: Lanes,
+  lanes: Lanes, // 
+  childLanes: Lanes, 
 
   // This is a pooled version of a Fiber. Every fiber that gets updated will
   // eventually have a pair. There are cases when we can clean up pairs to save
   // memory if we need to.
-  alternate: Fiber | null,
+  alternate: Fiber | null, // fiber缓存老节点
 
   // Time spent rendering this Fiber and its descendants for the current update.
   // This tells us how well the tree makes use of sCU for memoization.
