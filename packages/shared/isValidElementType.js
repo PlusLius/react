@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 检查是否是有效的Element
 import {
   REACT_CONTEXT_TYPE,
   REACT_FORWARD_REF_TYPE,
