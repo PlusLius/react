@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 合成事件对象定义
 /* eslint valid-typeof: 0 */
 
 import assign from 'shared/assign';
