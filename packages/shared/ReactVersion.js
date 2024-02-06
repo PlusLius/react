@@ -13,4 +13,5 @@
 // TODO: This module is used both by the release scripts and to expose a version
 // at runtime. We should instead inject the version number as part of the build
 // process, and use the ReactVersions.js module as the single source of truth.
+// 版本号
 export default '18.0.0';
