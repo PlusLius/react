@@ -6,7 +6,7 @@
  *
  * @flow strict
  */
-
+// 最小堆排序
 type Heap = Array<Node>;
 type Node = {|
   id: number,
