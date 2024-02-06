@@ -86,7 +86,7 @@ const defaultOnRecoverableError =
       };
 
 function ReactDOMRoot(internalRoot: FiberRoot) {
-  this._internalRoot = internalRoot;
+  this._internalRoot = internalRoot; // 放在this上
 }
 
 ReactDOMHydrationRoot.prototype.render = ReactDOMRoot.prototype.render = function(
@@ -134,6 +134,7 @@ ReactDOMHydrationRoot.prototype.render = ReactDOMRoot.prototype.render = functio
       }
     }
   }
+  // 更新
   updateContainer(children, root, null, null);
 };
 
@@ -242,6 +243,7 @@ export function createRoot(
       : container;
   listenToAllSupportedEvents(rootContainerElement);
 
+  // 实例化
   return new ReactDOMRoot(root);
 }
 
