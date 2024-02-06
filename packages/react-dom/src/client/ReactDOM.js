@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 定义ReactDom对象
 import type {ReactNodeList} from 'shared/ReactTypes';
 import type {Container} from './ReactDOMHostConfig';
 import type {
