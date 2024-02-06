@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 不同节点更新方法与子节点协调方法
 import type {
   ReactProviderType,
   ReactContext,
