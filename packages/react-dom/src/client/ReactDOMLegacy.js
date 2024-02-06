@@ -309,7 +309,7 @@ export function hydrate(
     callback,
   );
 }
-
+// ReactDOM render方法
 export function render(
   element: React$Element<any>,
   container: Container,
