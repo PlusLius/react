@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 处理跨组件通信context
 import type {Fiber} from './ReactInternalTypes';
 import type {StackCursor} from './ReactFiberStack.new';
 
