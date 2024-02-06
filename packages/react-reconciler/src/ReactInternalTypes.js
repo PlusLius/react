@@ -75,6 +75,7 @@ export type Fiber = {|
   // minimize the number of objects created during the initial render.
 
   // Tag identifying the type of fiber.
+  // 标识fiber的类型，标记是函数组件还是类组件等等
   tag: WorkTag,
 
   // Unique identifier of this child.
