@@ -333,7 +333,7 @@ function onlyChild<T>(children: T): T {
 
   return children;
 }
-
+// React.children 提供map, forEach方法
 export {
   forEachChildren as forEach,
   mapChildren as map,
