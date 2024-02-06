@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 获取charCode
 /**
  * `charCode` represents the actual "character code" and is safe to use with
  * `String.fromCharCode`. As such, only keys that correspond to printable
