@@ -198,7 +198,7 @@ function applyDerivedStateFromProps(
     updateQueue.baseState = memoizedState;
   }
 }
-
+// 类组件更新
 const classComponentUpdater = {
   isMounted,
   enqueueSetState(inst, payload, callback) {
@@ -269,6 +269,7 @@ const classComponentUpdater = {
       markStateUpdateScheduled(fiber, lane);
     }
   },
+  // 类组件强制更新
   enqueueForceUpdate(inst, callback) {
     const fiber = getInstance(inst);
     const eventTime = requestEventTime();
