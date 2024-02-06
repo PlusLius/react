@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// React diff 算法调用
 import type {ReactElement} from 'shared/ReactElementType';
 import type {ReactPortal} from 'shared/ReactTypes';
 import type {Fiber} from './ReactInternalTypes';
