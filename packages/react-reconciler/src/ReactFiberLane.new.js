@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 标记fiber任务
 import type {FiberRoot} from './ReactInternalTypes';
 import type {Transition} from './ReactFiberTracingMarkerComponent.new';
 
