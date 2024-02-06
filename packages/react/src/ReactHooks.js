@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 定义React Hooks的文件
 import type {Dispatcher} from 'react-reconciler/src/ReactInternalTypes';
 import type {
   MutableSource,
