@@ -10,7 +10,7 @@
 // ATTENTION
 // When adding new symbols to this file,
 // Please consider also adding to 'react-devtools-shared/src/backend/ReactSymbols'
-
+// 标记ReactElement的type
 import {enableSymbolFallbackForWWW} from './ReactFeatureFlags';
 
 const usePolyfill =
