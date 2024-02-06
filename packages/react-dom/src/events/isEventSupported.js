@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 判断当前环境是否支持某个事件
 import {canUseDOM} from 'shared/ExecutionEnvironment';
 
 /**
