@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 给节点设置文本
 import {TEXT_NODE} from '../shared/HTMLNodeType';
 
 /**
