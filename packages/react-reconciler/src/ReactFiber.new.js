@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 创建fiber
 import type {ReactElement} from 'shared/ReactElementType';
 import type {ReactFragment, ReactPortal, ReactScope} from 'shared/ReactTypes';
 import type {Fiber} from './ReactInternalTypes';
