@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+// 定义ReactElement createElement cloneElement
+
 import getComponentNameFromType from 'shared/getComponentNameFromType';
 import {REACT_ELEMENT_TYPE} from 'shared/ReactSymbols';
 import assign from 'shared/assign';
