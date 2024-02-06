@@ -326,14 +326,17 @@ export function updateContainer(
   if (__DEV__) {
     onScheduleRoot(container, element);
   }
+  // 拿到根节点fiber
   const current = container.current;
+  // 当前时间
   const eventTime = requestEventTime();
+  // 根据根fiber拿到lane
   const lane = requestUpdateLane(current);
 
   if (enableSchedulingProfiler) {
     markRenderScheduled(lane);
   }
-
+  // context对象
   const context = getContextForSubtree(parentComponent);
   if (container.context === null) {
     container.context = context;
@@ -357,7 +360,7 @@ export function updateContainer(
       );
     }
   }
-
+  // 创建1个update
   const update = createUpdate(eventTime, lane);
   // Caution: React DevTools currently depends on this property
   // being called "element".
@@ -376,10 +379,12 @@ export function updateContainer(
     }
     update.callback = callback;
   }
-
+  // update进入队列
   enqueueUpdate(current, update, lane);
+  // 处理update更新
   const root = scheduleUpdateOnFiber(current, lane, eventTime);
   if (root !== null) {
+    // 处理非紧急更新
     entangleTransitions(root, current, lane);
   }
 
