@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 定义类组件的方法
 import type {Fiber} from './ReactInternalTypes';
 import type {Lanes} from './ReactFiberLane.new';
 import type {UpdateQueue} from './ReactUpdateQueue.new';
