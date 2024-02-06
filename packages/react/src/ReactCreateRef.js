@@ -7,7 +7,7 @@
  */
 
 import type {RefObject} from 'shared/ReactTypes';
-
+// 定义createRef方法
 // an immutable object with a single mutable value
 export function createRef(): RefObject {
   const refObject = {
