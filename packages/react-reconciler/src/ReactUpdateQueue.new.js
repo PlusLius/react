@@ -195,7 +195,7 @@ export function cloneUpdateQueue<State>(
     workInProgress.updateQueue = clone;
   }
 }
-
+// 批量更新 
 export function createUpdate(eventTime: number, lane: Lane): Update<*> {
   const update: Update<*> = {
     eventTime,
@@ -209,7 +209,7 @@ export function createUpdate(eventTime: number, lane: Lane): Update<*> {
   };
   return update;
 }
-
+// 链表结构的队列
 export function enqueueUpdate<State>(
   fiber: Fiber,
   update: Update<State>,
@@ -227,11 +227,13 @@ export function enqueueUpdate<State>(
     const interleaved = sharedQueue.interleaved;
     if (interleaved === null) {
       // This is the first update. Create a circular list.
+      // 双向链表
       update.next = update;
       // At the end of the current render, this queue's interleaved updates will
       // be transferred to the pending queue.
       pushInterleavedQueue(sharedQueue);
     } else {
+      // 双向链表
       update.next = interleaved.next;
       interleaved.next = update;
     }
@@ -242,6 +244,7 @@ export function enqueueUpdate<State>(
       // This is the first update. Create a circular list.
       update.next = update;
     } else {
+      // 双向链表
       update.next = pending.next;
       pending.next = update;
     }
