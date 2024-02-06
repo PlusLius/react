@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 浅比较函数
 import is from './objectIs';
 import hasOwnProperty from './hasOwnProperty';
 
