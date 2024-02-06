@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// hook的处理
 import type {
   MutableSource,
   MutableSourceGetSnapshotFn,
