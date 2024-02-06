@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 返回fiber root
 import type {ReactNodeList} from 'shared/ReactTypes';
 import type {
   FiberRoot,
