@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  * @flow
  */
-
+// 获取fiber节点上的事件
 import type {Fiber} from 'react-reconciler/src/ReactInternalTypes';
 import type {Props} from '../client/ReactDOMHostConfig';
 
