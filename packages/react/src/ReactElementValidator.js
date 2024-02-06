@@ -36,6 +36,8 @@ import {setExtraStackFrame} from './ReactDebugCurrentFrame';
 import {describeUnknownElementTypeFrameInDEV} from 'shared/ReactComponentStackFrame';
 import hasOwnProperty from 'shared/hasOwnProperty';
 
+// 定义校验函数
+
 function setCurrentlyValidatingElement(element) {
   if (__DEV__) {
     if (element) {
