@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// ReactElement的数据结构
 export type Source = {|
   fileName: string,
   lineNumber: number,
