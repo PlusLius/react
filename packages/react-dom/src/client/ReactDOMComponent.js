@@ -100,6 +100,8 @@ let canDiffStyleForHydrationWarning;
 
 let normalizeHTML;
 
+// 将虚拟dom节点同步更新到真实dom节点
+
 if (__DEV__) {
   warnedUnknownTags = {
     // There are working polyfills for <dialog>. Let people use it.
