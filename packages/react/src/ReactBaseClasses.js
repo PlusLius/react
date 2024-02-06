@@ -13,6 +13,8 @@ if (__DEV__) {
   Object.freeze(emptyObject);
 }
 
+
+// 真正实现React.Component React.PureComponent的地方
 /**
  * Base class helpers for the updating state of a component.
  */
