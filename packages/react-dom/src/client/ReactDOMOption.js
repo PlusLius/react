@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 处理option标签节点
 import {Children} from 'react';
 import {getToStringValue, toString} from './ToStringValue';
 
