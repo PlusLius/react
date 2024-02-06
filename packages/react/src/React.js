@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 返回react对象
 import ReactVersion from 'shared/ReactVersion';
 import {
   REACT_FRAGMENT_TYPE,
@@ -84,9 +84,9 @@ export {
   Children,
   createMutableSource,
   createRef,
-  Component,
-  PureComponent,
-  createContext,
+  Component, // React.Component
+  PureComponent, // React.PureComponent
+  createContext, // React.createContext
   createServerContext,
   forwardRef,
   lazy,
@@ -103,7 +103,7 @@ export {
   useSyncExternalStore,
   useReducer,
   useRef,
-  useState,
+  useState, // React.useState
   REACT_FRAGMENT_TYPE as Fragment,
   REACT_PROFILER_TYPE as Profiler,
   REACT_STRICT_MODE_TYPE as StrictMode,
