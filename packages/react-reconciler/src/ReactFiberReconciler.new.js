@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// fiber节点协调方法
 import type {
   Fiber,
   SuspenseHydrationCallbacks,
