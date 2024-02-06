@@ -6,7 +6,7 @@
  *
  * @flow
  */
-
+// 标记当前执行环境
 export const canUseDOM: boolean = !!(
   typeof window !== 'undefined' &&
   typeof window.document !== 'undefined' &&
