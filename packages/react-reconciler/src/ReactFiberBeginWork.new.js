@@ -1007,7 +1007,7 @@ function markRef(current: Fiber | null, workInProgress: Fiber) {
     }
   }
 }
-
+// 更新阶段执行
 function updateFunctionComponent(
   current,
   workInProgress,
@@ -1046,6 +1046,7 @@ function updateFunctionComponent(
   if (__DEV__) {
     ReactCurrentOwner.current = workInProgress;
     setIsRendering(true);
+    // 调用函数组件方法
     nextChildren = renderWithHooks(
       current,
       workInProgress,
@@ -1101,6 +1102,7 @@ function updateFunctionComponent(
 
   // React DevTools reads this flag.
   workInProgress.flags |= PerformedWork;
+  // 最终调用
   reconcileChildren(current, workInProgress, nextChildren, renderLanes);
   return workInProgress.child;
 }
