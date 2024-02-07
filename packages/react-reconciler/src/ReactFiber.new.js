@@ -125,22 +125,23 @@ function FiberNode(
   key: null | string,
   mode: TypeOfMode,
 ) {
-  // Instance
-  this.tag = tag;
-  this.key = key;
+  // Instance Fiber作为数据结构
+  this.tag = tag; // 对应的组件类型 Function Component Class Component Host Component等
+  this.key = key; // 
   this.elementType = null;
-  this.type = null;
-  this.stateNode = null;
+  this.type = null; // Function Component 是指函数本身 Class Component 是指类组件 HostComponent 是指 dom 的 tagName
+  this.stateNode = null; // Host Component 是指真实的DOM节点
 
-  // Fiber
+  // Fiber 作为架构 return child sibling 链接组成一颗 fiber 树
   this.return = null;
   this.child = null;
   this.sibling = null;
-  this.index = 0;
+  this.index = 0; // 同级 fiber 节点 插入dom的位置索引
 
   this.ref = null;
 
-  this.pendingProps = pendingProps;
+  // 将 fiber 作为动态的工作单元时的属性 
+  this.pendingProps = pendingProps; 
   this.memoizedProps = null;
   this.updateQueue = null;
   this.memoizedState = null;
@@ -148,15 +149,15 @@ function FiberNode(
 
   this.mode = mode;
 
-  // Effects
+  // Effects Host Component的副作用包括增删改查 Function Component副作用使用了useEffect useLayoutEffect
   this.flags = NoFlags;
   this.subtreeFlags = NoFlags;
   this.deletions = null;
 
-  this.lanes = NoLanes;
+  this.lanes = NoLanes; // 优先级调度相关
   this.childLanes = NoLanes;
 
-  this.alternate = null;
+  this.alternate = null; // fiber 架构的工作方式 双缓存工作机制
 
   if (enableProfilerTimer) {
     // Note: The following is done to avoid a v8 performance cliff.
