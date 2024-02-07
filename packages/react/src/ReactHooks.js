@@ -76,11 +76,13 @@ export function useContext<T>(Context: ReactContext<T>): T {
   }
   return dispatcher.useContext(Context);
 }
-//
+// useState -> dispatcher -> dispatcher.useState -> mountState -> [state, setState]
 export function useState<S>(
   initialState: (() => S) | S,
 ): [S, Dispatch<BasicStateAction<S>>] {
+  // resolveDispatcher获取dispatcher
   const dispatcher = resolveDispatcher();
+  // dispatcher.useState调用mountState
   return dispatcher.useState(initialState);
 }
 
