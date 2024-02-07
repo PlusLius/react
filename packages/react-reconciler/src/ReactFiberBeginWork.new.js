@@ -3814,7 +3814,7 @@ function attemptEarlyBailoutIfNoScheduledUpdate(
   }
   return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
 }
-
+// 渲染阶段开始时执行
 function beginWork(
   current: Fiber | null,
   workInProgress: Fiber,
