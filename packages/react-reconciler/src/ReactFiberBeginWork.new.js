@@ -3817,7 +3817,9 @@ function attemptEarlyBailoutIfNoScheduledUpdate(
   }
   return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
 }
-// 渲染阶段开始时执行
+// 渲染阶段开始时执行，渲染阶段生成子fiber
+// beginWork -> updateHostComponent -> reconcileChildren -> reconcileChildFibers -> reconcileSingleElement ->
+// createFiberFromElement -> craeteFiberFromTypeAndProps -> createFiber -> FiberNode
 function beginWork(
   current: Fiber | null,
   workInProgress: Fiber,
