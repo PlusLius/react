@@ -988,6 +988,7 @@ function completeWork(
             markUpdate(workInProgress);
           }
         } else {
+          // 为HostComponent节点创建对应的DOM节点
           const instance = createInstance(
             type,
             newProps,
