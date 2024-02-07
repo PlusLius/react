@@ -628,8 +628,9 @@ export function resetHooksAfterThrow(): void {
   didScheduleRenderPhaseUpdateDuringThisPass = false;
   localIdCounter = 0;
 }
-
+// hooks数据结构组织形式
 function mountWorkInProgressHook(): Hook {
+  // 单个hook以对象的形式存在
   const hook: Hook = {
     memoizedState: null,
 
@@ -642,9 +643,11 @@ function mountWorkInProgressHook(): Hook {
 
   if (workInProgressHook === null) {
     // This is the first hook in the list
+    // 将第一个hook作为链表的头节点
     currentlyRenderingFiber.memoizedState = workInProgressHook = hook;
   } else {
     // Append to the end of the list
+    // 链表如果不为空，则将hook追加到链表的尾部
     workInProgressHook = workInProgressHook.next = hook;
   }
   return workInProgressHook;
@@ -1499,16 +1502,22 @@ function checkIfSnapshotChanged(inst) {
 function forceStoreRerender(fiber) {
   scheduleUpdateOnFiber(fiber, SyncLane, NoTimestamp);
 }
-
+// useState -> dispatcher -> dispatcher.useState -> mountState -> [state, useState]
+// 主要工作是初始化hooks
 function mountState<S>(
   initialState: (() => S) | S,
 ): [S, Dispatch<BasicStateAction<S>>] {
+  // 将新的hook对象追加到链表尾部
   const hook = mountWorkInProgressHook();
+  // initialState如果是函数
   if (typeof initialState === 'function') {
     // $FlowFixMe: Flow doesn't like mixed types
+    // 调用这个函数的返回结果作为initialState
     initialState = initialState();
   }
+  // 将initialState作为记忆存下来
   hook.memoizedState = hook.baseState = initialState;
+  // 创建当前hook对象的更新队列
   const queue: UpdateQueue<S, BasicStateAction<S>> = {
     pending: null,
     interleaved: null,
@@ -1525,6 +1534,7 @@ function mountState<S>(
     currentlyRenderingFiber,
     queue,
   ): any));
+  // 返回state值和setState
   return [hook.memoizedState, dispatch];
 }
 
