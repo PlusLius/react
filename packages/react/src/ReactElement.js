@@ -361,6 +361,9 @@ export function jsxDEV(type, config, maybeKey, source, self) {
  * Create and return a new ReactElement of the given type.
  * See https://reactjs.org/docs/react-api.html#createelement
  */
+// babel编译react后使用的createElement
+// <div> <p>有对应dom节点的元素叫HostComponent
+//
 export function createElement(type, config, children) {
   let propName;
 
@@ -570,6 +573,6 @@ export function isValidElement(object) {
   return (
     typeof object === 'object' &&
     object !== null &&
-    object.$$typeof === REACT_ELEMENT_TYPE
+    object.$$typeof === REACT_ELEMENT_TYPE // 合法的React Element
   );
 }
