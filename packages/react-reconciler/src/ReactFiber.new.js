@@ -118,7 +118,7 @@ if (__DEV__) {
     hasBadMapPolyfill = true;
   }
 }
-
+// 真正调用创建fiber节点
 function FiberNode(
   tag: WorkTag,
   pendingProps: mixed,
@@ -212,6 +212,7 @@ function FiberNode(
 //    is faster.
 // 5) It should be easy to port this to a C struct and keep a C implementation
 //    compatible.
+// 创建fiber节点
 const createFiber = function(
   tag: WorkTag,
   pendingProps: mixed,
@@ -469,7 +470,7 @@ export function createHostRootFiber(
 
   return createFiber(HostRoot, null, null, mode);
 }
-
+// 创建fiber节点
 export function createFiberFromTypeAndProps(
   type: any, // React$ElementType
   key: null | string,
@@ -593,7 +594,7 @@ export function createFiberFromTypeAndProps(
       }
     }
   }
-
+  // 创建fiber节点
   const fiber = createFiber(fiberTag, pendingProps, key, mode);
   fiber.elementType = type;
   fiber.type = resolvedType;
@@ -624,7 +625,7 @@ export function createOffscreenHostContainerFiber(
     throw new Error('Not implemented.');
   }
 }
-
+// 创建fiber节点
 export function createFiberFromElement(
   element: ReactElement,
   mode: TypeOfMode,
