@@ -283,7 +283,7 @@ if (__DEV__) {
   didWarnAboutTailOptions = {};
   didWarnAboutDefaultPropsOnFunctionComponent = {};
 }
-
+// 为workInProgress创建子fiber
 export function reconcileChildren(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -294,7 +294,8 @@ export function reconcileChildren(
     // If this is a fresh new component that hasn't been rendered yet, we
     // won't update its child set by applying minimal side-effects. Instead,
     // we will add them all to the child before it gets rendered. That means
-    // we can optimize this reconciliation pass by not tracking side-effects.
+    // we can optimize this reconciliation pass by not tracking side-effects
+    // 不会标记effectTag
     workInProgress.child = mountChildFibers(
       workInProgress,
       null,
@@ -308,6 +309,7 @@ export function reconcileChildren(
 
     // If we had any progressed work already, that is invalid at this point so
     // let's throw it out.
+    // 会标记effectTag
     workInProgress.child = reconcileChildFibers(
       workInProgress,
       current.child,
@@ -1482,7 +1484,7 @@ function mountHostRootWithoutHydrating(
   reconcileChildren(current, workInProgress, nextChildren, renderLanes);
   return workInProgress.child;
 }
-
+// commit阶段
 function updateHostComponent(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -1514,6 +1516,7 @@ function updateHostComponent(
   }
 
   markRef(current, workInProgress);
+  // 创建workInProgrees的子fiber
   reconcileChildren(current, workInProgress, nextChildren, renderLanes);
   return workInProgress.child;
 }
@@ -3961,6 +3964,7 @@ function beginWork(
     case HostRoot:
       return updateHostRoot(current, workInProgress, renderLanes);
     case HostComponent:
+      // 渲染阶段完成后，执行commit阶段
       return updateHostComponent(current, workInProgress, renderLanes);
     case HostText:
       return updateHostText(current, workInProgress);
