@@ -826,7 +826,7 @@ export function completeSuspendedOffscreenHostContainer(
   }
   bubbleProperties(workInProgress);
 }
-
+// 渲染阶段完成时执行
 function completeWork(
   current: Fiber | null,
   workInProgress: Fiber,
