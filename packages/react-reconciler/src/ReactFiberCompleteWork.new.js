@@ -944,6 +944,7 @@ function completeWork(
       const rootContainerInstance = getRootHostContainer();
       const type = workInProgress.type;
       if (current !== null && workInProgress.stateNode != null) {
+        // 更新阶段执行
         updateHostComponent(
           current,
           workInProgress,
