@@ -366,7 +366,7 @@ function areHookInputsEqual(
   }
   return true;
 }
-
+// 调用函数组件方法
 export function renderWithHooks<Props, SecondArg>(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -426,7 +426,7 @@ export function renderWithHooks<Props, SecondArg>(
         ? HooksDispatcherOnMount
         : HooksDispatcherOnUpdate;
   }
-
+  // 调用函数组件方法
   let children = Component(props, secondArg);
 
   // Check if there was a render phase update
