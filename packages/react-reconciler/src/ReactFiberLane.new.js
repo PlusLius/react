@@ -34,7 +34,7 @@ export const TotalLanes = 31;
 
 export const NoLanes: Lanes = /*                        */ 0b0000000000000000000000000000000;
 export const NoLane: Lane = /*                          */ 0b0000000000000000000000000000000;
-
+// 同步任务优先级最高
 export const SyncLane: Lane = /*                        */ 0b0000000000000000000000000000001;
 
 export const InputContinuousHydrationLane: Lane = /*    */ 0b0000000000000000000000000000010;
@@ -42,7 +42,10 @@ export const InputContinuousLane: Lane = /*             */ 0b0000000000000000000
 
 export const DefaultHydrationLane: Lane = /*            */ 0b0000000000000000000000000001000;
 export const DefaultLane: Lane = /*                     */ 0b0000000000000000000000000010000;
-
+// 非紧急更新任务和相邻非紧急更新任务
+// transition属于低优先级的更新，如果有两个相邻的transition使用同一个Lane
+// 那么只有他们两个同时结束了才是真的结束了，所以需要改进给相邻的transition赋值不同的Lane
+// 
 const TransitionHydrationLane: Lane = /*                */ 0b0000000000000000000000000100000;
 const TransitionLanes: Lanes = /*                       */ 0b0000000001111111111111111000000;
 const TransitionLane1: Lane = /*                        */ 0b0000000000000000000000001000000;
@@ -84,9 +87,11 @@ export const OffscreenLane: Lane = /*                   */ 0b1000000000000000000
 // It should be kept in sync with the Lanes values above.
 export function getLabelForLane(lane: Lane): string | void {
   if (enableSchedulingProfiler) {
+    // 同步
     if (lane & SyncLane) {
       return 'Sync';
     }
+    // input
     if (lane & InputContinuousHydrationLane) {
       return 'InputContinuousHydration';
     }
@@ -96,12 +101,14 @@ export function getLabelForLane(lane: Lane): string | void {
     if (lane & DefaultHydrationLane) {
       return 'DefaultHydration';
     }
+    // 默认
     if (lane & DefaultLane) {
       return 'Default';
     }
     if (lane & TransitionHydrationLane) {
       return 'TransitionHydration';
     }
+    // 低优先级
     if (lane & TransitionLanes) {
       return 'Transition';
     }
@@ -130,16 +137,20 @@ let nextRetryLane: Lane = RetryLane1;
 
 function getHighestPriorityLanes(lanes: Lanes | Lane): Lanes {
   switch (getHighestPriorityLane(lanes)) {
+    // 同步
     case SyncLane:
       return SyncLane;
     case InputContinuousHydrationLane:
       return InputContinuousHydrationLane;
+    // input
     case InputContinuousLane:
       return InputContinuousLane;
     case DefaultHydrationLane:
       return DefaultHydrationLane;
+    // 默认
     case DefaultLane:
       return DefaultLane;
+    // 低优先级更新
     case TransitionHydrationLane:
       return TransitionHydrationLane;
     case TransitionLane1:
@@ -159,6 +170,9 @@ function getHighestPriorityLanes(lanes: Lanes | Lane): Lanes {
     case TransitionLane15:
     case TransitionLane16:
       return lanes & TransitionLanes;
+      // 在优先级调度下存在饿死的情况
+      // 用户指定优先级来保证低优先级的任务也能得到执行
+      // 使用retry避免饿死
     case RetryLane1:
     case RetryLane2:
     case RetryLane3:
@@ -323,7 +337,7 @@ export function getMostRecentEventTime(root: FiberRoot, lanes: Lanes): number {
 
   return mostRecentEventTime;
 }
-
+// 计算过期时间
 function computeExpirationTime(lane: Lane, currentTime: number) {
   switch (lane) {
     case SyncLane:
@@ -338,6 +352,7 @@ function computeExpirationTime(lane: Lane, currentTime: number) {
       // to fix the starvation. However, this scenario supports the idea that
       // expiration times are an important safeguard when starvation
       // does happen.
+      // 高优先级少等一下
       return currentTime + 250;
     case DefaultHydrationLane:
     case DefaultLane:
@@ -358,6 +373,7 @@ function computeExpirationTime(lane: Lane, currentTime: number) {
     case TransitionLane14:
     case TransitionLane15:
     case TransitionLane16:
+      // 低优先级多等一下
       return currentTime + 5000;
     case RetryLane1:
     case RetryLane2:
@@ -369,6 +385,7 @@ function computeExpirationTime(lane: Lane, currentTime: number) {
       // crashes. There must be some other underlying bug; not super urgent but
       // ideally should figure out why and fix it. Unfortunately we don't have
       // a repro for the crashes, only detected via production metrics.
+      // 立马过期，提升优先级
       return NoTimestamp;
     case SelectiveHydrationLane:
     case IdleHydrationLane:
@@ -385,9 +402,9 @@ function computeExpirationTime(lane: Lane, currentTime: number) {
       return NoTimestamp;
   }
 }
-
+// 检查挨饿的情况
 export function markStarvedLanesAsExpired(
-  root: FiberRoot,
+  root: FiberRoot, // fiberRoot检查是否有挨饿，如果有则标记过期，提升优先级
   currentTime: number,
 ): void {
   // TODO: This gets called every time we yield. We can optimize by storing
@@ -402,6 +419,7 @@ export function markStarvedLanesAsExpired(
   // Iterate through the pending lanes and check if we've reached their
   // expiration time. If so, we'll assume the update is being starved and mark
   // it as expired to force it to finish.
+  // 循环访问pendingLanes，并检查是否达到过期时间，如果是，就认为这个update挨饿了
   let lanes = pendingLanes;
   while (lanes > 0) {
     const index = pickArbitraryLaneIndex(lanes);
@@ -412,11 +430,13 @@ export function markStarvedLanesAsExpired(
       // Found a pending lane with no expiration time. If it's not suspended, or
       // if it's pinged, assume it's CPU-bound. Compute a new expiration time
       // using the current time.
+      // 找到一个没有过期时间的pending lane，如果它没有被终止，并且存在有效的 lane，就认为是cpu密集型
       if (
         (lane & suspendedLanes) === NoLanes ||
         (lane & pingedLanes) !== NoLanes
       ) {
         // Assumes timestamps are monotonically increasing.
+        // 计算过期时间
         expirationTimes[index] = computeExpirationTime(lane, currentTime);
       }
     } else if (expirationTime <= currentTime) {
@@ -560,7 +580,7 @@ export function higherPriorityLane(a: Lane, b: Lane) {
   // This works because the bit ranges decrease in priority as you go left.
   return a !== NoLane && a < b ? a : b;
 }
-
+// 创建非空洞数组
 export function createLaneMap<T>(initial: T): LaneMap<T> {
   // Intentionally pushing one by one.
   // https://v8.dev/blog/elements-kinds#avoid-creating-holes
