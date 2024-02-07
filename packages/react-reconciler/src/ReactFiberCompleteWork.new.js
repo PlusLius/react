@@ -827,6 +827,8 @@ export function completeSuspendedOffscreenHostContainer(
   bubbleProperties(workInProgress);
 }
 // 渲染阶段完成时执行
+// 挂载dom节点到对应的fiber节点
+// 整个completeWork完成时将有一个完整的dom树和fiber树
 function completeWork(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -989,6 +991,7 @@ function completeWork(
           }
         } else {
           // 为HostComponent节点创建对应的DOM节点
+          // 拿到dom元素
           const instance = createInstance(
             type,
             newProps,
@@ -996,15 +999,16 @@ function completeWork(
             currentHostContext,
             workInProgress,
           );
-
+          // 将dom加入到dom树中
           appendAllChildren(instance, workInProgress, false, false);
-
+          // 将dom节点保存在对应fiber的stateNode中
           workInProgress.stateNode = instance;
 
           // Certain renderers require commit-time effects for initial mount.
           // (eg DOM renderer supports auto-focus for certain elements).
           // Make sure such renderers get scheduled for later work.
           if (
+            // 为dom设置属性
             finalizeInitialChildren(
               instance,
               type,
