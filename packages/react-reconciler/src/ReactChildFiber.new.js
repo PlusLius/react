@@ -262,6 +262,7 @@ function resolveLazy(lazyType) {
 // to be able to optimize each path individually by branching early. This needs
 // a compiler or we can do it manually. Helpers that don't need this branching
 // live outside of this function.
+// 为fiber打effectTag标记
 function ChildReconciler(shouldTrackSideEffects) {
   function deleteChild(returnFiber: Fiber, childToDelete: Fiber): void {
     if (!shouldTrackSideEffects) {
@@ -1125,7 +1126,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     created.return = returnFiber;
     return created;
   }
-
+  // 创建子fiber节点
   function reconcileSingleElement(
     returnFiber: Fiber,
     currentFirstChild: Fiber | null,
@@ -1196,6 +1197,7 @@ function ChildReconciler(shouldTrackSideEffects) {
       created.return = returnFiber;
       return created;
     } else {
+      // 创建fiber节点
       const created = createFiberFromElement(element, returnFiber.mode, lanes);
       created.ref = coerceRef(returnFiber, currentFirstChild, element);
       created.return = returnFiber;
@@ -1242,6 +1244,7 @@ function ChildReconciler(shouldTrackSideEffects) {
   // This API will tag the children with the side-effect of the reconciliation
   // itself. They will be added to the side-effect list as we pass through the
   // children and the parent.
+  // 为子fiber打effectTag
   function reconcileChildFibers(
     returnFiber: Fiber,
     currentFirstChild: Fiber | null,
@@ -1268,6 +1271,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     // Handle object types
     if (typeof newChild === 'object' && newChild !== null) {
       switch (newChild.$$typeof) {
+          // 单一的react element
         case REACT_ELEMENT_TYPE:
           return placeSingleChild(
             reconcileSingleElement(
@@ -1297,7 +1301,7 @@ function ChildReconciler(shouldTrackSideEffects) {
             lanes,
           );
       }
-
+      // 当作数组处理
       if (isArray(newChild)) {
         return reconcileChildrenArray(
           returnFiber,
@@ -1318,7 +1322,7 @@ function ChildReconciler(shouldTrackSideEffects) {
 
       throwOnInvalidObjectType(returnFiber, newChild);
     }
-
+    // 文本节点
     if (
       (typeof newChild === 'string' && newChild !== '') ||
       typeof newChild === 'number'
