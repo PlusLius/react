@@ -829,6 +829,7 @@ export function completeSuspendedOffscreenHostContainer(
 // 渲染阶段完成时执行
 // 挂载dom节点到对应的fiber节点
 // 整个completeWork完成时将有一个完整的dom树和fiber树
+// completeWork 则负责将 Fiber 节点映射为 DOM 节点。
 function completeWork(
   current: Fiber | null,
   workInProgress: Fiber,
