@@ -290,12 +290,14 @@ export function reconcileChildren(
   nextChildren: any,
   renderLanes: Lanes,
 ) {
+  // 判断 current 是否为 null
   if (current === null) {
     // If this is a fresh new component that hasn't been rendered yet, we
     // won't update its child set by applying minimal side-effects. Instead,
     // we will add them all to the child before it gets rendered. That means
     // we can optimize this reconciliation pass by not tracking side-effects
     // 不会标记effectTag
+    // 若 current 为 null，则进入 mountChildFibers 的逻辑
     workInProgress.child = mountChildFibers(
       workInProgress,
       null,
@@ -310,6 +312,7 @@ export function reconcileChildren(
     // If we had any progressed work already, that is invalid at this point so
     // let's throw it out.
     // 会标记effectTag
+    // 若 current 不为 null，则进入 reconcileChildFibers 的逻辑
     workInProgress.child = reconcileChildFibers(
       workInProgress,
       current.child,
@@ -3823,6 +3826,8 @@ function attemptEarlyBailoutIfNoScheduledUpdate(
 // beginWork -> updateHostComponent -> reconcileChildren -> reconcileChildFibers -> reconcileSingleElement ->
 // createFiberFromElement -> craeteFiberFromTypeAndProps -> createFiber -> FiberNode
 // beginWork 将创建新的 Fiber 节点
+// beginWork 的入参是一对用 alternate 连接起来的 workInProgress 和 current 节点；
+// beginWork 的核心逻辑是根据 fiber 节点（workInProgress）的 tag 属性的不同，调用不同的节点创建函数。
 function beginWork(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -3845,11 +3850,13 @@ function beginWork(
       );
     }
   }
-
+  
+  //  current 节点不为空的情况下，会加一道辨识，看看是否有更新逻辑要处理
   if (current !== null) {
+    // 获取新旧 props
     const oldProps = current.memoizedProps;
     const newProps = workInProgress.pendingProps;
-
+    // 若 props 更新或者上下文改变，则认为需要"接受更新"
     if (
       oldProps !== newProps ||
       hasLegacyContextChanged() ||
@@ -3858,8 +3865,9 @@ function beginWork(
     ) {
       // If props or context changed, mark the fiber as having performed work.
       // This may be unset if the props are determined to be equal later (memo).
+      // 打个更新标
       didReceiveUpdate = true;
-    } else {
+    } else { // 不需要更新的情况 
       // Neither props nor legacy context changes. Check if there's a pending
       // update or context change.
       const hasScheduledUpdateOrContext = checkScheduledUpdateOrContext(
@@ -3873,6 +3881,7 @@ function beginWork(
         (workInProgress.flags & DidCapture) === NoFlags
       ) {
         // No pending updates or context. Bail out now.
+        // 不需要更新的其他情况
         didReceiveUpdate = false;
         return attemptEarlyBailoutIfNoScheduledUpdate(
           current,
@@ -3966,11 +3975,14 @@ function beginWork(
         renderLanes,
       );
     }
+      // 根节点将进入这个逻辑
     case HostRoot:
       return updateHostRoot(current, workInProgress, renderLanes);
+      // dom 标签对应的节点将进入这个逻辑
     case HostComponent:
       // 渲染阶段完成后，执行commit阶段
       return updateHostComponent(current, workInProgress, renderLanes);
+      // 文本节点将进入这个逻辑
     case HostText:
       return updateHostText(current, workInProgress);
     case SuspenseComponent:
