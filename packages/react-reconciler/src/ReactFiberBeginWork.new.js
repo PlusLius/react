@@ -3822,6 +3822,7 @@ function attemptEarlyBailoutIfNoScheduledUpdate(
 // 渲染阶段开始时执行，渲染阶段生成子fiber
 // beginWork -> updateHostComponent -> reconcileChildren -> reconcileChildFibers -> reconcileSingleElement ->
 // createFiberFromElement -> craeteFiberFromTypeAndProps -> createFiber -> FiberNode
+// beginWork 将创建新的 Fiber 节点
 function beginWork(
   current: Fiber | null,
   workInProgress: Fiber,
