@@ -199,7 +199,8 @@ function warnOnInvalidCallback(callback: mixed, callerName: string): void {
     }
   }
 }
-
+// render方法调用 legacyRenderSubtreeIntoContainer
+// 调用legacyRenderSubtreeIntoContainer 将生成的DOM对象赋值给fiberRoot
 function legacyRenderSubtreeIntoContainer(
   parentComponent: ?React$Component<any, any>,
   children: ReactNodeList,
@@ -211,11 +212,12 @@ function legacyRenderSubtreeIntoContainer(
     topLevelUpdateWarnings(container);
     warnOnInvalidCallback(callback === undefined ? null : callback, 'render');
   }
-
+  // 传入的真实的DOM对象
   const maybeRoot = container._reactRootContainer;
   let root: FiberRoot;
   if (!maybeRoot) {
     // Initial mount
+    // 首次渲染，返回fiberRoot
     root = legacyCreateRootFromDOMContainer(
       container,
       children,
@@ -224,6 +226,7 @@ function legacyRenderSubtreeIntoContainer(
       forceHydrate,
     );
   } else {
+    // 处理非首次渲染的情况，即更新的情况
     root = maybeRoot;
     if (typeof callback === 'function') {
       const originalCallback = callback;
@@ -233,6 +236,7 @@ function legacyRenderSubtreeIntoContainer(
       };
     }
     // Update
+    // 将fiberRoot一起传递给updateContainer
     updateContainer(children, root, parentComponent, callback);
   }
   return getPublicRootInstance(root);
@@ -340,6 +344,7 @@ export function render(
       );
     }
   }
+  // render方法调用
   return legacyRenderSubtreeIntoContainer(
     null,
     element,
