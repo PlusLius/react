@@ -263,7 +263,14 @@ function resolveLazy(lazyType) {
 // a compiler or we can do it manually. Helpers that don't need this branching
 // live outside of this function.
 // 为fiber打effectTag标记
+// 关键的入参 shouldTrackSideEffects，意为“是否需要追踪副作用”，
+// 因此 reconcileChildFibers 和 mountChildFibers 的不同，在于对副作用的处理不同；
+// ChildReconciler 中定义了大量如 placeXXX、deleteXXX、updateXXX、reconcileXXX 等这样的函数，
+// 这些函数覆盖了对 Fiber 节点的创建、增加、删除、修改等动作，将直接或间接地被 reconcileChildFibers 所调用；
+// ChildReconciler 的返回值是一个名为 reconcileChildFibers 的函数，这个函数是一个逻辑分发器，
+// 它将根据入参的不同，执行不同的 Fiber 节点操作，最终返回不同的目标 Fiber 节点。
 function ChildReconciler(shouldTrackSideEffects) {
+    // 删除节点的逻辑
   function deleteChild(returnFiber: Fiber, childToDelete: Fiber): void {
     if (!shouldTrackSideEffects) {
       // Noop.
@@ -326,7 +333,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     clone.sibling = null;
     return clone;
   }
-
+  // 插入节点的逻辑
   function placeChild(
     newFiber: Fiber,
     lastPlacedIndex: number,
@@ -356,11 +363,15 @@ function ChildReconciler(shouldTrackSideEffects) {
       return lastPlacedIndex;
     }
   }
-
+  // 单个节点的插入逻辑
   function placeSingleChild(newFiber: Fiber): Fiber {
     // This is simpler for the single child case. We only need to do a
     // placement for inserting new children.
     if (shouldTrackSideEffects && newFiber.alternate === null) {
+      // Placement 这个 effectTag 的意义，是在渲染器执行时，也就是真实 DOM 渲染时，
+      // 告诉渲染器：我这里需要新增 DOM 节点。 effectTag 记录的是副作用的类型，
+      // 而所谓“副作用”，React 给出的定义是“数据获取、订阅或者修改 DOM”等动作。
+      // 在这里，Placement 对应的显然是 DOM 相关的副作用操作。
       newFiber.flags |= Placement;
     }
     return newFiber;
@@ -1245,6 +1256,8 @@ function ChildReconciler(shouldTrackSideEffects) {
   // itself. They will be added to the side-effect list as we pass through the
   // children and the parent.
   // 为子fiber打effectTag
+  // 这个函数是一个逻辑分发器，它将根据入参的不同，
+  // 执行不同的 Fiber 节点操作，最终返回不同的目标 Fiber 节点。
   function reconcileChildFibers(
     returnFiber: Fiber,
     currentFirstChild: Fiber | null,
@@ -1346,7 +1359,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     // Remaining cases are all treated as empty.
     return deleteRemainingChildren(returnFiber, currentFirstChild);
   }
-
+  //  将总的 reconcileChildFibers 函数返回
   return reconcileChildFibers;
 }
 
