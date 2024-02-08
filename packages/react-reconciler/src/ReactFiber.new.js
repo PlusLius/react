@@ -220,6 +220,7 @@ const createFiber = function(
   mode: TypeOfMode,
 ): Fiber {
   // $FlowFixMe: the shapes are exact here but Flow doesn't like constructors
+  // createFiber 将创建一个 FiberNode 实例，而 FiberNode，它正是 Fiber 节点的类型。
   return new FiberNode(tag, pendingProps, key, mode);
 };
 
@@ -253,9 +254,12 @@ export function resolveLazyComponentTag(Component: Function): WorkTag {
 
 // This is used to create an alternate fiber to do work on.
 // 创建workInProgress root in fiber
-export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber {
+// 这里入参中的 current 传入的是现有树结构中的 rootFiber 对象
+export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber 
+  
   let workInProgress = current.alternate;
   // 首屏渲染不存在workInProgress
+  // ReactDOM.render 触发的首屏渲染将进入这个逻辑
   if (workInProgress === null) {
     // We use a double buffering pooling technique because we know that we'll
     // only ever need at most two versions of a tree. We pool the "other" unused
@@ -263,8 +267,11 @@ export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber {
     // extra objects for things that are never updated. It also allow us to
     // reclaim the extra memory if needed.
     // 创建新的fiber节点
+    // workInProgress 是 createFiber 方法的返回值 
+    // workInProgress 就是一个 Fiber 节点
+    // workInProgress 节点其实就是 current 节点（即 rootFiber）的副本
     workInProgress = createFiber(
-      current.tag,
+      current.tag, // workInProgress 的创建入参其实来源于 current   current 指向 rootFiber 对象
       pendingProps,
       current.key,
       current.mode,
@@ -280,8 +287,10 @@ export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber {
       workInProgress._debugOwner = current._debugOwner;
       workInProgress._debugHookTypes = current._debugHookTypes;
     }
-
+    // workInProgress 的 alternate 将指向 current
+    // current 指向 rootFiber 对象
     workInProgress.alternate = current;
+    // current 的 alternate 将反过来指向 workInProgress
     current.alternate = workInProgress;
   } else {
     // 更新阶段执行
@@ -357,7 +366,7 @@ export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber {
         break;
     }
   }
-
+  // 返回 workInProgress 节点
   return workInProgress;
 }
 
