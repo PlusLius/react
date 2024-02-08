@@ -1759,6 +1759,7 @@ function renderRootSync(root: FiberRoot, lanes: Lanes) {
 
   do {
     try {
+      // 创建完root fiber的备份后调用
       workLoopSync();
       break;
     } catch (thrownValue) {
@@ -1797,9 +1798,17 @@ function renderRootSync(root: FiberRoot, lanes: Lanes) {
 
 // The work loop is an extremely hot path. Tell Closure not to inline it.
 /** @noinline */
+// workLoopSync 做的事情就是通过 while 循环反复判断 workInProgress 是否为空，并在不为空的情况下针对它执行 performUnitOfWork 函数。
+// 而 performUnitOfWork 函数将触发对 beginWork 的调用，进而实现对新 Fiber 节点的创建。若 beginWork 所创建的 Fiber 节点不为空
+// ，则 performUniOfWork 会用这个新的 Fiber 节点来更新 workInProgress 的值，为下一次循环做准备。
+// 通过循环调用 performUnitOfWork 来触发 beginWork，新的 Fiber 节点就会被不断地创建。
+// 当 workInProgress 终于为空时，说明没有新的节点可以创建了，也就意味着已经完成对整棵 Fiber 树的构建。
+// 过程中构建出的这棵 Fiber 树，也正是大名鼎鼎的 workInProgress 树。
 function workLoopSync() {
   // Already timed out, so perform work without checking if we need to yield.
+  // 若 workInProgress 不为空
   while (workInProgress !== null) {
+    // 针对它执行 performUnitOfWork 方法
     performUnitOfWork(workInProgress);
   }
 }
@@ -1891,7 +1900,8 @@ function workLoopConcurrent() {
     performUnitOfWork(workInProgress);
   }
 }
-
+// 而 performUnitOfWork 函数将触发对 beginWork 的调用，进而实现对新 Fiber 节点的创建。若 beginWork 所创建的 Fiber 节点不为空，
+// 则 performUniOfWork 会用这个新的 Fiber 节点来更新 workInProgress 的值，为下一次循环做准备。
 function performUnitOfWork(unitOfWork: Fiber): void {
   // The current, flushed, state of this fiber is the alternate. Ideally
   // nothing should rely on this, but relying on it here means that we don't
@@ -1902,6 +1912,7 @@ function performUnitOfWork(unitOfWork: Fiber): void {
   let next;
   if (enableProfilerTimer && (unitOfWork.mode & ProfileMode) !== NoMode) {
     startProfilerTimer(unitOfWork);
+    // 调用beginWork创建fiber
     next = beginWork(current, unitOfWork, subtreeRenderLanes);
     stopProfilerTimerIfRunningAndRecordDelta(unitOfWork, true);
   } else {
