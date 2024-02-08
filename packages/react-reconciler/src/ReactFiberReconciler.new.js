@@ -360,12 +360,13 @@ export function updateContainer(
       );
     }
   }
-  // 创建1个update
+  // 结合 lane（优先级）信息，创建 update 对象，一个 update 对象意味着一个更新
   const update = createUpdate(eventTime, lane);
   // Caution: React DevTools currently depends on this property
   // being called "element".
+  // update 的 payload 对应的是一个 React 元素
   update.payload = {element};
-
+  // 处理 callback，这个 callback 其实就是我们调用 ReactDOM.render 时传入的 callback
   callback = callback === undefined ? null : callback;
   if (callback !== null) {
     if (__DEV__) {
@@ -379,9 +380,9 @@ export function updateContainer(
     }
     update.callback = callback;
   }
-  // update进入队列
+  //  将 update 入队 update进入队列
   enqueueUpdate(current, update, lane);
-  // 处理update更新
+  // 调度 fiberRoot 处理update更新
   const root = scheduleUpdateOnFiber(current, lane, eventTime);
   if (root !== null) {
     // 处理非紧急更新
