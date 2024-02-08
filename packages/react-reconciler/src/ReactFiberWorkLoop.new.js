@@ -519,7 +519,7 @@ function requestRetryLane(fiber: Fiber) {
 
   return claimNextRetryLane();
 }
-
+// 调度更新
 export function scheduleUpdateOnFiber(
   fiber: Fiber,
   lane: Lane,
@@ -632,7 +632,7 @@ export function scheduleUpdateOnFiber(
         markRootSuspended(root, workInProgressRootRenderLanes);
       }
     }
-
+    // 触发的就是 performSyncWorkOnRoot
     ensureRootIsScheduled(root, eventTime);
     if (
       lane === SyncLane &&
@@ -818,6 +818,7 @@ function ensureRootIsScheduled(root: FiberRoot, currentTime: number) {
       if (__DEV__ && ReactCurrentActQueue.isBatchingLegacy !== null) {
         ReactCurrentActQueue.didScheduleLegacyUpdate = true;
       }
+      // 开启真正的render阶段
       scheduleLegacySyncCallback(performSyncWorkOnRoot.bind(null, root));
     } else {
       scheduleSyncCallback(performSyncWorkOnRoot.bind(null, root));
@@ -2011,7 +2012,7 @@ function completeUnitOfWork(unitOfWork: Fiber): void {
     workInProgressRootExitStatus = RootCompleted;
   }
 }
-
+// 真实 DOM 的渲染过程
 function commitRoot(
   root: FiberRoot,
   recoverableErrors: null | Array<mixed>,
