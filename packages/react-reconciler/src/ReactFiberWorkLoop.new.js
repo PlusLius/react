@@ -1504,7 +1504,7 @@ export function popRenderLanes(fiber: Fiber) {
   subtreeRenderLanes = subtreeRenderLanesCursor.current;
   popFromStack(subtreeRenderLanesCursor, fiber);
 }
-
+// prepareFreshStack 的作用是重置一个新的堆栈环境，
 function prepareFreshStack(root: FiberRoot, lanes: Lanes): Fiber {
   root.finishedWork = null;
   root.finishedLanes = NoLanes;
@@ -1531,6 +1531,7 @@ function prepareFreshStack(root: FiberRoot, lanes: Lanes): Fiber {
     }
   }
   workInProgressRoot = root;
+  // 调用createWorkInProgress
   const rootWorkInProgress = createWorkInProgress(root.current, null);
   workInProgress = rootWorkInProgress;
   workInProgressRootRenderLanes = subtreeRenderLanes = workInProgressRootIncludedLanes = lanes;
@@ -1716,7 +1717,7 @@ export function renderHasNotSuspendedYet(): boolean {
   // so those are false.
   return workInProgressRootExitStatus === RootInProgress;
 }
-
+// performSyncWorkOnRoot 调用 renderRootSync 调用 prepareFreshStack
 function renderRootSync(root: FiberRoot, lanes: Lanes) {
   const prevExecutionContext = executionContext;
   executionContext |= RenderContext;
@@ -1742,6 +1743,7 @@ function renderRootSync(root: FiberRoot, lanes: Lanes) {
     }
 
     workInProgressTransitions = getTransitionsForLanes(root, lanes);
+    // prepareFreshStack 的作用是重置一个新的堆栈环境，
     prepareFreshStack(root, lanes);
   }
 
