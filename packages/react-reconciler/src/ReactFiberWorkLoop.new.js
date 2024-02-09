@@ -1923,8 +1923,14 @@ function performUnitOfWork(unitOfWork: Fiber): void {
   unitOfWork.memoizedProps = unitOfWork.pendingProps;
   if (next === null) {
     // If this doesn't spawn new work, complete the current work.
+    // performUnitOfWork 每次会尝试调用 beginWork 来创建当前节点的子节点，
+    // 若创建出的子节点为空（也就意味着当前节点不存在子 Fiber 节点），
+    // 则说明当前节点是一个叶子节点。按照深度优先遍历的原则，当遍历到叶子节点时，“递”阶段就结束了，
+    // 随之而来的是“归”的过程。因此这种情况下，就会调用 completeUnitOfWork，执行当前节点对应的 completeWork 逻辑。
+    // 调用 completeUnitOfWork
     completeUnitOfWork(unitOfWork);
   } else {
+    // 将当前节点更新为新创建出的 Fiber 节点
     workInProgress = next;
   }
 
