@@ -835,12 +835,14 @@ function completeWork(
   workInProgress: Fiber,
   renderLanes: Lanes,
 ): Fiber | null {
+  // 取出 Fiber 节点的属性值，存储在 newProps 里
   const newProps = workInProgress.pendingProps;
   // Note: This intentionally doesn't check if we're hydrating because comparing
   // to the current tree provider fiber is just as fast and less error-prone.
   // Ideally we would have a special version of the work loop only
   // for hydration.
   popTreeContext(workInProgress);
+  // 根据 workInProgress 节点的 tag 属性的不同，决定要进入哪段逻辑
   switch (workInProgress.tag) {
     case IndeterminateComponent:
     case LazyComponent:
@@ -940,10 +942,12 @@ function completeWork(
       }
       return null;
     }
+    // h1 节点的类型属于 HostComponent，
     case HostComponent: {
       popHostContext(workInProgress);
       const rootContainerInstance = getRootHostContainer();
       const type = workInProgress.type;
+      // 判断 current 节点是否存在，因为目前是挂载阶段，因此 current 节点是不存在的
       if (current !== null && workInProgress.stateNode != null) {
         // 更新阶段执行
         updateHostComponent(
@@ -958,6 +962,7 @@ function completeWork(
           markRef(workInProgress);
         }
       } else {
+        // 这里首先是针对异常情况进行 return 处理
         if (!newProps) {
           if (workInProgress.stateNode === null) {
             throw new Error(
@@ -970,7 +975,7 @@ function completeWork(
           bubbleProperties(workInProgress);
           return null;
         }
-
+         // 接下来就为 DOM 节点的创建做准备了
         const currentHostContext = getHostContext();
         // TODO: Move createInstance to beginWork and keep it on a context
         // "stack" as the parent. Then append children as we go in beginWork
@@ -1003,7 +1008,7 @@ function completeWork(
           );
           // 将dom加入到dom树中
           appendAllChildren(instance, workInProgress, false, false);
-          // 将dom节点保存在对应fiber的stateNode中
+          // stateNode 用于存储当前 Fiber 节点对应的 DOM 节点
           workInProgress.stateNode = instance;
 
           // Certain renderers require commit-time effects for initial mount.
