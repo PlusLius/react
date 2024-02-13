@@ -303,7 +303,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     }
     return null;
   }
-
+// O(1)时间找到key对应的old fiber
   function mapRemainingChildren(
     returnFiber: Fiber,
     currentFirstChild: Fiber,
@@ -339,6 +339,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     lastPlacedIndex: number,
     newIndex: number,
   ): number {
+    // fiber对应的dom节点的索引位置
     newFiber.index = newIndex;
     if (!shouldTrackSideEffects) {
       // During hydration, the useId algorithm needs to know which fibers are
@@ -358,6 +359,7 @@ function ChildReconciler(shouldTrackSideEffects) {
         return oldIndex;
       }
     } else {
+      // 新创建的fiber节点
       // This is an insertion.
       newFiber.flags |= Placement;
       return lastPlacedIndex;
@@ -403,6 +405,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     lanes: Lanes,
   ): Fiber {
     const elementType = element.type;
+    // type不相同
     if (elementType === REACT_FRAGMENT_TYPE) {
       return updateFragment(
         returnFiber,
@@ -440,6 +443,7 @@ function ChildReconciler(shouldTrackSideEffects) {
       }
     }
     // Insert
+    // tag不相同无法复用原有的fiber节点，创建新的fiber节点
     const created = createFiberFromElement(element, returnFiber.mode, lanes);
     created.ref = coerceRef(returnFiber, current, element);
     created.return = returnFiber;
@@ -594,8 +598,10 @@ function ChildReconciler(shouldTrackSideEffects) {
       switch (newChild.$$typeof) {
         case REACT_ELEMENT_TYPE: {
           if (newChild.key === key) {
+            // key 相同
             return updateElement(returnFiber, oldFiber, newChild, lanes);
           } else {
+            // key 不同无法复用
             return null;
           }
         }
@@ -744,11 +750,14 @@ function ChildReconciler(shouldTrackSideEffects) {
     }
     return knownKeys;
   }
-
+  // 多节点diff  
+  // 1. 节点更新
+  // 2. 节点新增或减少
+  // 3. 节点位置变化
   function reconcileChildrenArray(
-    returnFiber: Fiber,
-    currentFirstChild: Fiber | null,
-    newChildren: Array<*>,
+    returnFiber: Fiber, // 父级fiber
+    currentFirstChild: Fiber | null, // current fiber
+    newChildren: Array<*>, // jsx数组
     lanes: Lanes,
   ): Fiber | null {
     // This algorithm can't optimize by searching from both ends since we
@@ -779,12 +788,17 @@ function ChildReconciler(shouldTrackSideEffects) {
       }
     }
 
+    // 保存多个workInProgess Fiber
     let resultingFirstChild: Fiber | null = null;
+    // 中间变量上一个fiber与下一个fiber通过previousNewFiber.sibling相连接
     let previousNewFiber: Fiber | null = null;
-
+    // diff的current fiber
     let oldFiber = currentFirstChild;
+    // 先创建的fiber节点对应dom节点的索引位置
     let lastPlacedIndex = 0;
+    // jsx的索引
     let newIdx = 0;
+    // oldFiber的下一个oldFiber
     let nextOldFiber = null;
     for (; oldFiber !== null && newIdx < newChildren.length; newIdx++) {
       if (oldFiber.index > newIdx) {
@@ -793,12 +807,14 @@ function ChildReconciler(shouldTrackSideEffects) {
       } else {
         nextOldFiber = oldFiber.sibling;
       }
+      // 是否需要新建一个fiber
       const newFiber = updateSlot(
         returnFiber,
         oldFiber,
         newChildren[newIdx],
         lanes,
       );
+      // newFiber为null结束循环
       if (newFiber === null) {
         // TODO: This breaks on empty slots like null children. That's
         // unfortunate because it triggers the slow path all the time. We need
@@ -810,12 +826,15 @@ function ChildReconciler(shouldTrackSideEffects) {
         break;
       }
       if (shouldTrackSideEffects) {
+        // oldFiber存在，新的fiber alternate === null 则删除老的fiber
         if (oldFiber && newFiber.alternate === null) {
           // We matched the slot, but we didn't reuse the existing fiber, so we
           // need to delete the existing child.
+          // oldFiber存在，新的fiber alternate === null 则删除老的fiber
           deleteChild(returnFiber, oldFiber);
         }
       }
+      // commit阶段插入dom标记
       lastPlacedIndex = placeChild(newFiber, lastPlacedIndex, newIdx);
       if (previousNewFiber === null) {
         // TODO: Move out of the loop. This only happens for the first run.
@@ -830,9 +849,10 @@ function ChildReconciler(shouldTrackSideEffects) {
       previousNewFiber = newFiber;
       oldFiber = nextOldFiber;
     }
-
+    // oldFiber 与 newFiber 同时遍历完
     if (newIdx === newChildren.length) {
       // We've reached the end of the new children. We can delete the rest.
+      // 删除所有还没有遍历的fiber
       deleteRemainingChildren(returnFiber, oldFiber);
       if (getIsHydrating()) {
         const numberOfForks = newIdx;
@@ -840,15 +860,18 @@ function ChildReconciler(shouldTrackSideEffects) {
       }
       return resultingFirstChild;
     }
-
+    // oldFiber遍历完
     if (oldFiber === null) {
       // If we don't have any more existing children we can choose a fast path
       // since the rest will all be insertions.
+      // 遍历剩余的newFiber
       for (; newIdx < newChildren.length; newIdx++) {
+        // 创建新的fiber
         const newFiber = createChild(returnFiber, newChildren[newIdx], lanes);
         if (newFiber === null) {
           continue;
         }
+        // 标记为插入到dom中
         lastPlacedIndex = placeChild(newFiber, lastPlacedIndex, newIdx);
         if (previousNewFiber === null) {
           // TODO: Move out of the loop. This only happens for the first run.
@@ -862,6 +885,7 @@ function ChildReconciler(shouldTrackSideEffects) {
         const numberOfForks = newIdx;
         pushTreeFork(returnFiber, numberOfForks);
       }
+      // 返回遍历完的workInProgress
       return resultingFirstChild;
     }
 
