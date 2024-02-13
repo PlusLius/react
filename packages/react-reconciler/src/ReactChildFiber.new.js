@@ -1139,31 +1139,43 @@ function ChildReconciler(shouldTrackSideEffects) {
   }
   // 创建子fiber节点
   function reconcileSingleElement(
-    returnFiber: Fiber,
-    currentFirstChild: Fiber | null,
-    element: ReactElement,
+    returnFiber: Fiber, // current Fiber的父级 Fiber
+    currentFirstChild: Fiber | null, // current Fiber
+    element: ReactElement, // jsx
     lanes: Lanes,
   ): Fiber {
     const key = element.key;
+    // current Fiber
     let child = currentFirstChild;
+    // mount时为null不进入
+    // update时进入
     while (child !== null) {
       // TODO: If key === null and child.key === null, then this only applies to
       // the first item in the list.
+      // DOM节点复用的依据
+      // 1. 只对同级元素进行diff
+      // 2. tag必须相同
+      // 3. key也必须相同
       if (child.key === key) {
         const elementType = element.type;
         if (elementType === REACT_FRAGMENT_TYPE) {
           if (child.tag === Fragment) {
+            // 删除存在的child.sibling
             deleteRemainingChildren(returnFiber, child.sibling);
+            // 复用老的fiber
             const existing = useFiber(child, element.props.children);
             existing.return = returnFiber;
             if (__DEV__) {
               existing._debugSource = element._source;
               existing._debugOwner = element._owner;
             }
+            // 返回复用的节点
             return existing;
           }
         } else {
+          // 不能复用
           if (
+            // 判断tag是否相同
             child.elementType === elementType ||
             // Keep this check inline so it only runs on the false path:
             (__DEV__
@@ -1190,11 +1202,15 @@ function ChildReconciler(shouldTrackSideEffects) {
           }
         }
         // Didn't match.
+        // key相同tag不同直接删除，current fiber sibling fiber 全部删除
         deleteRemainingChildren(returnFiber, child);
         break;
       } else {
+        // key不同
         deleteChild(returnFiber, child);
       }
+      // ul > li * 3
+      // ul > p
       child = child.sibling;
     }
 
@@ -1208,6 +1224,8 @@ function ChildReconciler(shouldTrackSideEffects) {
       created.return = returnFiber;
       return created;
     } else {
+      // 都没有匹配到也进行创建fiber
+      // mount时进入创建新fiber节点
       // 创建fiber节点
       const created = createFiberFromElement(element, returnFiber.mode, lanes);
       created.ref = coerceRef(returnFiber, currentFirstChild, element);
@@ -1272,6 +1290,8 @@ function ChildReconciler(shouldTrackSideEffects) {
     // Handle top level unkeyed fragments as if they were arrays.
     // This leads to an ambiguity between <>{[...]}</> and <>...</>.
     // We treat the ambiguous cases above the same.
+    // 单一节点diff算法
+    // 判断newChild是否是fragment类型
     const isUnkeyedTopLevelFragment =
       typeof newChild === 'object' &&
       newChild !== null &&
@@ -1282,6 +1302,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     }
 
     // Handle object types
+    // 判断newChild是否是object类型
     if (typeof newChild === 'object' && newChild !== null) {
       switch (newChild.$$typeof) {
           // 单一的react element
@@ -1314,6 +1335,7 @@ function ChildReconciler(shouldTrackSideEffects) {
             lanes,
           );
       }
+      // 多节点diff算法
       // 当作数组处理
       if (isArray(newChild)) {
         return reconcileChildrenArray(
@@ -1323,7 +1345,7 @@ function ChildReconciler(shouldTrackSideEffects) {
           lanes,
         );
       }
-
+      // 多节点diff算法
       if (getIteratorFn(newChild)) {
         return reconcileChildrenIterator(
           returnFiber,
@@ -1335,7 +1357,7 @@ function ChildReconciler(shouldTrackSideEffects) {
 
       throwOnInvalidObjectType(returnFiber, newChild);
     }
-    // 文本节点
+    // 当作文本节点处理
     if (
       (typeof newChild === 'string' && newChild !== '') ||
       typeof newChild === 'number'
@@ -1357,6 +1379,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     }
 
     // Remaining cases are all treated as empty.
+    // 都没有命中执行删除逻辑，删除currentFiber
     return deleteRemainingChildren(returnFiber, currentFirstChild);
   }
   //  将总的 reconcileChildFibers 函数返回
