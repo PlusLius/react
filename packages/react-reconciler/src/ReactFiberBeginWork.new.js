@@ -313,6 +313,7 @@ export function reconcileChildren(
     // let's throw it out.
     // 会标记effectTag
     // 若 current 不为 null，则进入 reconcileChildFibers 的逻辑
+    // diff算法
     workInProgress.child = reconcileChildFibers(
       workInProgress,
       current.child,
